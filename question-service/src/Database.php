@@ -22,12 +22,12 @@ class Database
     public function getQuestions()
     {
         // db.collection.find() [20]
-        $cursor = $this->collection->find(, ['projection' => ['_id' => 1, 'text' => 1]]);
-        $questions =;
+        $cursor = $this->collection->find([], ['projection' => ['_id' => 1, 'text' => 1]]);
+        $questions = [];
         foreach ($cursor as $document) {
             // Перетворюємо ObjectId в рядок для JSON
             $document['_id'] = (string)$document['_id'];
-            $questions = $document;
+            $questions[] = $document;
         }
         return $questions;
     }

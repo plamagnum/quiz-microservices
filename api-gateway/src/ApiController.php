@@ -36,7 +36,7 @@ class ApiController
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $requestBody);
-        curl_setopt($ch, CURLOPT_HTTPHEADER,);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
 
         $response = curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
@@ -49,7 +49,7 @@ class ApiController
     public function handleDelete()
     {
         // Отримуємо query string (напр., 'id=12345') від Nginx
-        $queryString = $_SERVER;
+        $queryString = $_SERVER['QUERY_STRING'];
         $url = $this->serviceUrl. '?'. $queryString;
 
         // Використовуємо cURL для пересилання DELETE-запиту

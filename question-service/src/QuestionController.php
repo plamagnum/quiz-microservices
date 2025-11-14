@@ -29,7 +29,7 @@ class QuestionController
             echo json_encode(['success' => true, 'id' => (string)$insertedId]);
         } else {
             http_response_code(400); // Bad Request
-            echo json_encode();
+            echo json_encode(['error' => 'Invalid JSON or missing "text" field']);
         }
     }
 
@@ -42,7 +42,7 @@ class QuestionController
                 echo json_encode(['success' => true]);
             } else {
                 http_response_code(404); // Not Found
-                echo json_encode();
+                echo json_encode(['error' => 'Question not found']);
             }
         } else {
             http_response_code(400); // Bad Request
