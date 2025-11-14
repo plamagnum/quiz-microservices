@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Мікросервісна Вікторина</title>
+    <style>
+        body { font-family: sans-serif; margin: 2em; }
+        ul { list-style: none; padding: 0; }
+        li { display: flex; justify-content: space-between; align-items: center; padding: 8px; border-bottom: 1px solid #ccc; }
+       .delete-btn { color: red; cursor: pointer; border: none; background: none; }
+        form { margin-bottom: 2em; }
+    </style>
+</head>
+<body>
+
+    <h1>Менеджер Запитань Вікторини</h1>
+
+    <form id="add-question-form">
+        <h3>Додати нове запитання</h3>
+        <label for="question-text">Текст запитання:</label>
+        <input type="text" id="question-text" required>
+        <button type="submit">Додати запитання</button>
+    </form>
+
+    <h2>Існуючі Запитання</h2>
+    <ul id="questions-list">
+        </ul>
+
+    <script src="app.js"></script>
+</body>
+</html>

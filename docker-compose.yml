@@ -1,0 +1,54 @@
+version: '3.9'
+
+services:
+  # 1. База даних MongoDB
+  mongo:
+    image: mongo:4.4.18
+    container_name: quiz_mongo
+    environment:
+      MONGO_INITDB_DATABASE: quizdb
+    volumes:
+      - ./data:/data/db  # Персистентне сховище даних
+    # ports:
+      # - "27017:27017" # Розкоментуйте це лише для локального дебагінгу з хост-машини
+
+  # 2. Приватний мікросервіс (Бізнес-логіка)
+  question-service-php:
+    build:
+      context: .
+      dockerfile: .docker/php/Dockerfile
+    container_name: quiz_question_service
+    volumes:
+      - ./question-service:/var/www/html
+    # Встановлюємо залежності MongoDB при старті контейнера [14, 15]
+    command: sh -c "composer install && php-fpm"
+    depends_on:
+      - mongo
+    # ВАЖЛИВО: Цей сервіс не має 'ports'. 
+    # Він недоступний ззовні, лише через внутрішню мережу Docker.
+
+  # 3. Публічний мікросервіс (API Gateway)
+  api-gateway-php:
+    build:
+      context: .
+      dockerfile: .docker/php/Dockerfile
+    container_name: quiz_api_gateway
+    volumes:
+      - ./api-gateway:/var/www/html
+    depends_on:
+      - question-service-php
+    # ВАЖЛИВО: Цей сервіс також не має 'ports'.
+    # До нього звертається лише Nginx через внутрішню мережу.
+
+  # 4. Веб-сервер та Зворотний Проксі (Єдина точка входу)
+  nginx:
+    image: nginx:latest
+    container_name: quiz_nginx
+    ports:
+      - "80:80" # Єдиний порт, відкритий на хост-машину
+    volumes:
+      - ./frontend:/var/www/frontend # Монтуємо статичний фронтенд
+      - ./api-gateway:/var/www/api-gateway # Монтуємо код шлюзу (для fastcgi) 
+      - ./.docker/nginx/default.conf:/etc/nginx/conf.d/default.conf # Конфігурація Nginx
+    depends_on:
+      - api-gateway-php
