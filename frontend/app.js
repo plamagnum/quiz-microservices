@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const data = {
             text: questionText.value,
-            options: 'xxx',// Сюди можна додати варіанти відповідей
+            // options: 'xxx', // Сюди можна додати варіанти відповідей
         };
 
         try {
@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (confirm('Ви впевнені, що хочете видалити це запитання?')) {
                 try {
                     // DELETE-запит [29]
-                    const response = await fetch(`${apiUrl}?id=${id}`, {
+                    const response = await fetch(`${apiUrl}?id=${encodeURIComponent(id)}`, {
                         method: 'DELETE'
                     });
 
